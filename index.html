@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        async function getPoke() {        
+            const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
+            const data = await response.json();
+            return data.results;
+        }
+
+        async function getPokemonDetails(pokemon) {
+            const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + pokemon.name);
+            const pokemonWithManyDetails = await response.json();
+            const pokemonDetailed = {
+                nome: pokemonWithManyDetails.name,
+                altura: pokemonWithManyDetails.height,
+                peso: pokemonWithManyDetails.weight,
+                tipos: pokemonWithManyDetails.types.map(type => type.type.name),
+                numero: pokemonWithManyDetails.id
+            };
+            return pokemonDetailed;
+        }
+
+        window.onload = async function () {
+            const pokemons = await getPoke();
+            const pokemonsWithDetails = await Promise.all(pokemons.map(pokemon => getPokemonDetails(pokemon)));
+            console.log(pokemonsWithDetails);
+        }
+    </script>
+</body>
+</html>
